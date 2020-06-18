@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include atc_app *.css
+recursive-include atc_app *.csv
+recursive-include atc_app *.html
+recursive-include atc_app *.ico
+recursive-include atc_app *.js
+recursive-include atc_app *.json
+recursive-include atc_app *.md
+recursive-include atc_app *.png
+recursive-include atc_app *.py
+recursive-include atc_app *.svg
+recursive-include atc_app *.txt
+recursive-exclude atc_app *.pyc
