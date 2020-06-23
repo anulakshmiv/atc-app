@@ -7,6 +7,12 @@ import frappe
 def execute(filters=None):
 	columns =[
 		{
+			"fieldname":"name",
+			"label":("Name"),
+			"fieldtype":"Select",
+			"width":"150"
+        	},
+		{
 			"fieldname":"primary_organization",
 			"label":("Primary Organization"),
 			"fieldtype":"Select",
@@ -108,21 +114,25 @@ def execute(filters=None):
 	if filters.get("sales_account_manager") and filters.get("misc_account_manager"):
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabMisc DR Details`.misc_deal_description,`tabMisc DR Details`.misc_deal_value_usd,`tabMisc DR Details`.misc_dr_id,`tabMisc DR Details`.misc_dr_status
 			from tabOpportunity INNER JOIN `tabMisc DR Details` ON tabOpportunity.name = `tabMisc DR Details`.parent
-			where sales_account_manager = %s and misc_account_manager = %s''', (filters.get('sales_account_manager'), (filters.get('misc_account_manager'))))
+			where sales_account_manager = %s and misc_account_manager = %s
+			group by modified order by modified desc''', (filters.get('sales_account_manager'), (filters.get('misc_account_manager'))))
 		print(data)
 	elif filters.get("sales_account_manager") and not filters.get("misc_account_manager"):
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabMisc DR Details`.misc_deal_description,`tabMisc DR Details`.misc_deal_value_usd,`tabMisc DR Details`.misc_dr_id,`tabMisc DR Details`.misc_dr_status
 			from tabOpportunity INNER JOIN `tabMisc DR Details` ON tabOpportunity.name = `tabMisc DR Details`.parent
-			where sales_account_manager = %s''', (filters.get('sales_account_manager')))
+			where sales_account_manager = %s
+			group by modified order by modified desc''', (filters.get('sales_account_manager')))
 		print(data)
 	elif filters.get("misc_account_manager") and not filters.get("sales_account_manager"):	
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabMisc DR Details`.misc_deal_description,`tabMisc DR Details`.misc_deal_value_usd,`tabMisc DR Details`.misc_dr_id,`tabMisc DR Details`.misc_dr_status
 			from tabOpportunity INNER JOIN `tabMisc DR Details` ON tabOpportunity.name = `tabMisc DR Details`.parent
-			where misc_account_manager = %s''', (filters.get('misc_account_manager')))
+			where misc_account_manager = %s
+			group by modified order by modified desc''', (filters.get('misc_account_manager')))
 		print(data)
 	else:
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabMisc DR Details`.misc_deal_description,`tabMisc DR Details`.misc_deal_value_usd,`tabMisc DR Details`.misc_dr_id,`tabMisc DR Details`.misc_dr_status
-			from tabOpportunity INNER JOIN `tabMisc DR Details` ON tabOpportunity.name = `tabMisc DR Details`.parent''')
+			from tabOpportunity INNER JOIN `tabMisc DR Details` ON tabOpportunity.name = `tabMisc DR Details`.parent
+			order by tabOpportunity.modified desc''')
 		print(data)
 	
 	return columns, data
