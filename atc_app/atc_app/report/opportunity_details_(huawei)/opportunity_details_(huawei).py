@@ -7,6 +7,12 @@ import frappe
 def execute(filters=None):
 	columns =[
 		{
+			"fieldname":"name",
+			"label":("Name"),
+			"fieldtype":"Select",
+			"width":"150"
+        	},	
+		{
 			"fieldname":"primary_organization",
 			"label":("Primary Organization"),
 			"fieldtype":"Select",
@@ -108,21 +114,25 @@ def execute(filters=None):
 	if filters.get("sales_account_manager") and filters.get("huawei_account_manager"):
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabHuawei DR Details`.huawei_deal_description,`tabHuawei DR Details`.huawei_deal_value_usd,`tabHuawei DR Details`.huawei_dr_id,`tabHuawei DR Details`.huawei_dr_status
 			from tabOpportunity INNER JOIN `tabHuawei DR Details` ON tabOpportunity.name = `tabHuawei DR Details`.parent
-			where sales_account_manager = %s and huawei_account_manager = %s''', (filters.get('sales_account_manager'), (filters.get('huawei_account_manager'))))
+			where sales_account_manager = %s and huawei_account_manager = %s
+			group by modified order by modified desc''', (filters.get('sales_account_manager'), (filters.get('huawei_account_manager'))))
 		print(data)
 	elif filters.get("sales_account_manager") and not filters.get("huawei_account_manager"):
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabHuawei DR Details`.huawei_deal_description,`tabHuawei DR Details`.huawei_deal_value_usd,`tabHuawei DR Details`.huawei_dr_id,`tabHuawei DR Details`.huawei_dr_status
 			from tabOpportunity INNER JOIN `tabHuawei DR Details` ON tabOpportunity.name = `tabHuawei DR Details`.parent
-			where sales_account_manager = %s''', (filters.get('sales_account_manager')))
+			where sales_account_manager = %s
+			group by modified order by modified desc''', (filters.get('sales_account_manager')))
 		print(data)
 	elif filters.get("huawei_account_manager") and not filters.get("sales_account_manager"):
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabHuawei DR Details`.huawei_deal_description,`tabHuawei DR Details`.huawei_deal_value_usd,`tabHuawei DR Details`.huawei_dr_id,`tabHuawei DR Details`.huawei_dr_status
 			from tabOpportunity INNER JOIN `tabHuawei DR Details` ON tabOpportunity.name = `tabHuawei DR Details`.parent
-			where huawei_account_manager = %s''', (filters.get('huawei_account_manager')))
+			where huawei_account_manager = %s
+			group by modified order by modified desc''', (filters.get('huawei_account_manager')))
 		print(data)
 	else:
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabHuawei DR Details`.huawei_deal_description,`tabHuawei DR Details`.huawei_deal_value_usd,`tabHuawei DR Details`.huawei_dr_id,`tabHuawei DR Details`.huawei_dr_status
-			from tabOpportunity INNER JOIN `tabHuawei DR Details` ON tabOpportunity.name = `tabHuawei DR Details`.parent''')
+			from tabOpportunity INNER JOIN `tabHuawei DR Details` ON tabOpportunity.name = `tabHuawei DR Details`.parent
+			order by tabOpportunity.modified desc''')
 		print(data)
 	
 	return columns,data
