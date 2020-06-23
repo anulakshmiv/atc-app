@@ -7,6 +7,12 @@ import frappe
 def execute(filters=None):
 	columns =[
 		{
+			"fieldname":"name",
+			"label":("Name"),
+			"fieldtype":"Select",
+			"width":"150"
+        	},
+		{
 			"fieldname":"primary_organization",
 			"label":("Primary Organization"),
 			"fieldtype":"Select",
@@ -108,21 +114,25 @@ def execute(filters=None):
 	if filters.get("sales_account_manager") and filters.get("juniper_account_manager"):
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabJuniper DR Details`.juniper_deal_description,`tabJuniper DR Details`.juniper_deal_value_usd,`tabJuniper DR Details`.juniper_dr_id,`tabJuniper DR Details`.juniper_dr_status
 			from tabOpportunity INNER JOIN `tabJuniper DR Details` ON tabOpportunity.name = `tabJuniper DR Details`.parent
-			where sales_account_manager = %s and juniper_account_manager = %s''', (filters.get('sales_account_manager'), (filters.get('juniper_account_manager'))))
+			where sales_account_manager = %s and juniper_account_manager = %s
+			group by modified order by modified desc''', (filters.get('sales_account_manager'), (filters.get('juniper_account_manager'))))
 		print(data)
 	elif filters.get("sales_account_manager") and not filters.get("juniper_account_manager"):
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabJuniper DR Details`.juniper_deal_description,`tabJuniper DR Details`.juniper_deal_value_usd,`tabJuniper DR Details`.juniper_dr_id,`tabJuniper DR Details`.juniper_dr_status
 			from tabOpportunity INNER JOIN `tabJuniper DR Details` ON tabOpportunity.name = `tabJuniper DR Details`.parent
-			where sales_account_manager = %s''', (filters.get('sales_account_manager')))
+			where sales_account_manager = %s
+			group by modified order by modified desc''', (filters.get('sales_account_manager')))
 		print(data)
 	elif filters.get("juniper_account_manager") and not filters.get("sales_account_manager"):
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabJuniper DR Details`.juniper_deal_description,`tabJuniper DR Details`.juniper_deal_value_usd,`tabJuniper DR Details`.juniper_dr_id,`tabJuniper DR Details`.juniper_dr_status
 			from tabOpportunity INNER JOIN `tabJuniper DR Details` ON tabOpportunity.name = `tabJuniper DR Details`.parent
-			where juniper_account_manager = %s''', (filters.get('juniper_account_manager')))
+			where juniper_account_manager = %s
+			group by modified order by modified desc''', (filters.get('juniper_account_manager')))
 		print(data)
 	else:
 		data = frappe.db.sql('''select tabOpportunity.primary_organization,tabOpportunity.crm_id,tabOpportunity.cust_name,tabOpportunity.description,tabOpportunity.expected_revenue,tabOpportunity.sales_account_manager,tabOpportunity.expected_closure_date,tabOpportunity.lead_generated_by,tabOpportunity.engagement_type,tabOpportunity.opportunity_stage,tabOpportunity.commit_month,tabOpportunity.commit_week,`tabJuniper DR Details`.juniper_deal_description,`tabJuniper DR Details`.juniper_deal_value_usd,`tabJuniper DR Details`.juniper_dr_id,`tabJuniper DR Details`.juniper_dr_status
-			from tabOpportunity INNER JOIN `tabJuniper DR Details` ON tabOpportunity.name = `tabJuniper DR Details`.parent''')
+			from tabOpportunity INNER JOIN `tabJuniper DR Details` ON tabOpportunity.name = `tabJuniper DR Details`.parent
+			order by tabOpportunity.modified desc''')
 		print(data)
 	
 	return columns, data
